@@ -40,9 +40,17 @@ public class UserController {
     //This controller method is called when the request pattern is of type 'users/registration' and also the incoming request is of POST type
     //This method calls the business logic and after the user record is persisted in the database, directs to login page
     @RequestMapping(value = "users/registration", method = RequestMethod.POST)
-    public String registerUser(User user) {
-        userService.registerUser(user);
-        return "redirect:/users/login";
+    public String registerUser(User user, Model model) {
+        String password = user.getPassword();
+        if (validatePassword(password)) {
+            userService.registerUser(user);
+            return "redirect:/users/login";
+        } else {
+            String error = "Password must contain atleast 1 alphabet, 1 number & 1 special character";
+            model.addAttribute("User", user);
+            model.addAttribute("passwordTypeError", error);
+            return "users/registration";
+        }
     }
 
     //This controller method is called when the request pattern is of type 'users/login'
@@ -78,5 +86,24 @@ public class UserController {
         List<Image> images = imageService.getAllImages();
         model.addAttribute("images", images);
         return "index";
+    }
+
+    public boolean validatePassword(String password) {
+        boolean digit = false;
+        boolean alphabet = false;
+        boolean specialChar = false;
+
+        for (int i = 0; i < password.length(); i++) {
+            if (Character.isDigit(password.charAt(i))) {
+                digit = true;
+            }
+            if (Character.isLetter(password.charAt(i))) {
+                alphabet = true;
+            }
+            if (!Character.isLetter(password.charAt(i)) && !Character.isDigit(password.charAt(i))) {
+                specialChar = true;
+            }
+        }
+        return digit && alphabet && specialChar;
     }
 }
