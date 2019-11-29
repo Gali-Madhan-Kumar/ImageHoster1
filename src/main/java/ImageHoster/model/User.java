@@ -41,6 +41,17 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Image> images = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Comment> comment = new ArrayList<>();
+
+    public List<Comment> getComments() {
+        return comment;
+    }
+
+    public void setComments(List<Comment> comment) {
+        this.comment = comment;
+    }
+
     public Integer getId() {
         return id;
     }
